@@ -5,4 +5,5 @@ config :abracadabra, Abracadabra.Repo,
   database: "abracadabra_dev",
   username: "postgres",
   password: "postgres",
+  hostname: "database",
   pool: Ecto.Adapters.SQL.Sandbox

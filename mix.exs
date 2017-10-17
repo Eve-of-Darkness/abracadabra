@@ -33,6 +33,8 @@ defmodule Abracadabra.Mixfile do
     [{:ecto, "~> 2.2.0"},
      {:postgrex, ">= 0.0.0"},
      {:httpotion, "~> 3.0.2"},
-     {:floki, "~> 0.18.0"}]
+     {:floki, "~> 0.18.0"},
+     
+     {:exvcr, "~> 0.8", only: :test}]
   end
 end

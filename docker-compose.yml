@@ -1,0 +1,16 @@
+version: '2'
+services:
+  database:
+    image: postgres:9.6
+    expose:
+      - "5432"
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MIX_ENV: dev
+    volumes:
+      - .:/code
+    depends_on:
+      - database

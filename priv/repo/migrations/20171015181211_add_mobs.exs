@@ -2,7 +2,7 @@ defmodule Abracadabra.Repo.Migrations.AddMobs do
   use Ecto.Migration
 
   def change do
-    create table(:mobs) do
+    create table(:actors) do
       add :name, :string
       add :type, :string
       add :min_lvl, :integer
