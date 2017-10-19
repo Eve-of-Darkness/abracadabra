@@ -1,1 +1,1 @@
-alias Abracadabra.Import.Allakhazam.ActorSource
+alias Abracadabra.Import.Allakhazam.{ActorSource, ActorParams}

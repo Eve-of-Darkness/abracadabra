@@ -8,7 +8,12 @@ defmodule Abracadabra.Import.Allakhazam.ActorSourceTest do
     :ok
   end
 
-  describe "Grabbing an NPC Merchant (66661)" do
+  test "An invalid id" do
+    result = use_cassette "bad-id", do: ActorSource.get("roflcopter")
+    assert result == {:error, :invalid_mob_id}
+  end
+
+  describe "Grabbing an NPC Merchant (6661)" do
     setup _ do
       {:ok, npc} = use_cassette "allakhazam-npc-merchant", do: ActorSource.get("6661")
       {:ok, npc: npc}

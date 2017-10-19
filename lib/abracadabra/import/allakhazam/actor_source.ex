@@ -25,11 +25,13 @@ defmodule Abracadabra.Import.Allakhazam.ActorSource do
 
   @domain "camelot.allakhazam.com"
   @main_div "div#col-main-inner-3"
+  @last_known_id 14976
 
   def get(id) do
     with {:ok, raw} <- load_raw_from_allakhazam(id),
-         actor <- raw
-                  |> load_name
+         :ok <- raw_is_valid?(raw),
+         {:ok, with_name} <- load_name(raw),
+         actor <- with_name
                   |> load_raw_table
                   |> match_table_data_to_attributes
     do
@@ -40,8 +42,27 @@ defmodule Abracadabra.Import.Allakhazam.ActorSource do
     end
   end
 
+  def get!(id) do
+    case get(id) do
+      {:ok, actor} -> actor
+      {:error, error} -> raise error
+    end
+  end
+
+  def stream do
+    Stream.map(1..@last_known_id, &get/1)
+  end
+
   defp load_raw_table(module) do
     put_in(module.raw_table, table_data(module))
+  end
+
+  defp raw_is_valid?(%{raw: str}) do
+    if String.valid?(str) do
+      :ok
+    else
+      {:error, :raw_data_is_invalid}
+    end
   end
 
   defp table_data(data) do
@@ -56,7 +77,10 @@ defmodule Abracadabra.Import.Allakhazam.ActorSource do
   end
 
   defp load_name(module) do
-    put_in(module.name, find(module, "h1") |> text)
+    case find(module, "h1") |> text do
+      "Invalid Mob ID" -> {:error, :invalid_mob_id}
+      name -> {:ok, put_in(module.name, name)}
+    end
   end
 
   defp find(%{raw: raw}, search) do
@@ -69,7 +93,7 @@ defmodule Abracadabra.Import.Allakhazam.ActorSource do
   defp text(source), do: Floki.text(source) |> String.trim
 
   defp load_raw_from_allakhazam(id) do
-    case HTTPotion.get("http://#{@domain}/db/search.html?cmob=#{id}") do
+    case HTTPotion.get("http://#{@domain}/db/search.html?cmob=#{id}", timeout: 60_000) do
       %{status_code: 200, body: body} ->
         {:ok, %__MODULE__{id: id, raw: body}}
       %{status_code: status} ->

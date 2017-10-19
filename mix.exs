@@ -34,6 +34,9 @@ defmodule Abracadabra.Mixfile do
      {:postgrex, ">= 0.0.0"},
      {:httpotion, "~> 3.0.2"},
      {:floki, "~> 0.18.0"},
+     {:flow, "~> 0.11"},
+     {:timex, "~> 3.1"},
+     {:progress_bar, "> 0.0.0"},
      
      {:exvcr, "~> 0.8", only: :test}]
   end
